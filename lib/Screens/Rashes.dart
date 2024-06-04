@@ -229,7 +229,7 @@ class _RashesState extends State<Rashes> {
                 );
               },
               child: Container(
-                height: 150,
+
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(45),
                   border: Border.all(width: 1, color: Colors.grey),

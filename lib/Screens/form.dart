@@ -57,7 +57,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
       ),
       body: Container(
         height: double.infinity,
-        decoration: BoxDecoration(color: Color(0XFFF5E4B9)),
+        decoration: BoxDecoration(color: Colors.white),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),

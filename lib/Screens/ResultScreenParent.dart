@@ -20,7 +20,7 @@ class _ResultScreenParentState extends State<ResultScreenParent> {
   String geminiResponse = '';
   bool geminiProcessing = false;
   bool isLoading = false;
-  final healthData = 'Some health data'; // Example health data
+  final Map<String,dynamic> healthData = {}; // Example health data
 
   @override
   Widget build(BuildContext context) {

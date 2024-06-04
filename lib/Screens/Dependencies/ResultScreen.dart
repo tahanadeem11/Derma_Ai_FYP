@@ -6,7 +6,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ResultScreen extends StatelessWidget {
-  final healthData;
+  final Map<String,dynamic> healthData;
   final File image;
   Map<String, dynamic> responseData = {};
   String geminiResponse = ''; // Variable to hold Gemini's response
@@ -140,7 +140,7 @@ class ResultScreen extends StatelessWidget {
 
                               child: Text(
                                 healthData.isNotEmpty
-                                    ? healthData
+                                    ? healthData.toString()
                                     : 'We are this accurate with our response',
                                 style: TextStyle(
                                   fontSize: 16,

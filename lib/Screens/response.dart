@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +27,7 @@ class ResponseData extends StatefulWidget {
 }
 
 class _ResponseDataState extends State<ResponseData> {
-  String _healthData = ''; // Variable to hold health data from API
+  Map<String,dynamic> _healthData = {} ;// Variable to hold health data from API
   bool _isLoading = false;
   String _error = '';
   File? _selectedImage; // Variable to hold the selected image file
@@ -48,6 +49,7 @@ class _ResponseDataState extends State<ResponseData> {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
+
       try {
         // Get the user document from Firestore
         DocumentSnapshot<Map<String, dynamic>> snapshot =
@@ -313,7 +315,7 @@ class _ResponseDataState extends State<ResponseData> {
                       SizedBox(height: 20),
                       Text(
                         _isLoading
-                            ? 'Loading...'
+                            ? 'Loading... Please Wait While Uploading'
                             : (_error.isNotEmpty
                                 ? 'Error: $_error'
                                 : 'Please upload an image'),
@@ -362,24 +364,18 @@ class _ResponseDataState extends State<ResponseData> {
                           forwardAnimationCurve: Curves.easeOutBack,
                         );
                       } else {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => (ResultScreen(
-                          healthData: _healthData,
-                          responseData: _responseData,
-                          geminiProcessing: _geminiProcessing,
-                          geminiResponse: _geminiResponse,
-                          isLoading: _isLoading,
-                          image: _selectedImage!,
-                        ))));
 
 
-                        print((ResultScreen(
-                          healthData: _healthData,
-                          responseData: _responseData,
-                          geminiProcessing: _geminiProcessing,
-                          geminiResponse: _geminiResponse,
-                          isLoading: _isLoading,
-                          image: _selectedImage!,
-                        )));
+
+Get.to(()=>ResultScreen(
+  healthData: _healthData,
+  responseData: _responseData,
+  geminiProcessing: _geminiProcessing,
+  geminiResponse: _geminiResponse,
+  isLoading: _isLoading,
+  image: _selectedImage!,
+));
+
                       }
                     },
                     child: Padding(
@@ -420,7 +416,7 @@ class _ResponseDataState extends State<ResponseData> {
   Future<void> pickfiles() async {
     // Reset older data and Gemini response
     setState(() {
-      _healthData = '';
+      _healthData = {};
       _geminiResponse = '';
       _error = '';
     });
@@ -444,7 +440,7 @@ class _ResponseDataState extends State<ResponseData> {
         // Step 3: Share base64 encoded image to API
         await _shareDataToAPI(base64Image);
       } catch (e) {
-        print('Error encoding image to base64: $e');
+        log('=============>>>    Error encoding image to base64: $e');
         setState(() {
           _error = 'Error encoding image to base64';
         });
@@ -459,39 +455,42 @@ class _ResponseDataState extends State<ResponseData> {
       dio.options.receiveTimeout = Duration(minutes: 5); // 300000 milliseconds
 
       var body = {'url': base64Image}; // Data to send in the body
-
+      log("===================>>> Disease Api calling start");
       final response = await dio.post(
         'https://healwiz-backend.onrender.com/predict_skin',
         data: body, // Specify the data object
       );
 
       if (response.statusCode == 200) {
-        print('Image data shared to API successfully');
-        print('API Response: ${response.data}');
-
+        log('====================>   Image data shared to API disease successfully');
+        log('API Response: ${response.data}');
+        log(response.toString());
         // Parse the JSON response and extract required parameters
         _responseData = response.data; // Update the responseData
-        String disease = _responseData['disease'] ?? 'N/A';
-        String prescription = _responseData['medicine'] ?? 'N/A';
-        String accuracy = _responseData['accuracy'] ?? 'N/A';
+        String disease = _responseData['disease'] ?? '';
+        String prescription = _responseData['medicine'] ?? '';
+        String accuracy = _responseData['accuracy'] ?? '';
 
         setState(() {
-          _healthData =
-          'Disease: $disease\nPrescription: $prescription\nAccuracy: $accuracy';
+
+          _healthData ={'disease':disease,
+          'prescription':prescription,
+         'accuracy' :accuracy};
+
         });
 
         // Send disease information to Gemini for reply
-        if (disease != 'N/A') {
+        if (disease.isNotEmpty) {
           await _sendToGemini(disease);
         }
       } else {
-        print('Failed to share image data to API');
+        log('Failed to share image data to API');
         setState(() {
           _error = 'Failed to share image data to API';
         });
       }
     } catch (e) {
-      print('Error sharing data to API: $e');
+      log('Error sharing data to API: $e');
       setState(() {
         _error = 'Error sharing data to API';
       });
@@ -511,6 +510,7 @@ class _ResponseDataState extends State<ResponseData> {
       gemini.text("$disease").then((value) {
         // Print the response to the console
         print(value?.output);
+        log("geimini data =>          >>>>as'd.asda");
 
         setState(() {
           _geminiResponse = value?.output ?? 'No response from Gemini';
@@ -519,13 +519,13 @@ class _ResponseDataState extends State<ResponseData> {
         });
       }).catchError((e) {
         // Handle errors
-        print(e);
+        log(e);
         setState(() {
           _geminiProcessing = false; // Set processing state to false on error
         });
       });
     } catch (e) {
-      print('Error sending data to Gemini: $e');
+      log('Error sending data to Gemini: $e');
       setState(() {
         _geminiProcessing = false; // Set processing state to false on error
       });

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:heal_wiz_application/Screens/profile.dart';
 import 'package:heal_wiz_application/Screens/response.dart';
@@ -262,19 +263,27 @@ class _AppointmentsState extends State<Appointments> {
                 height: 20,
               ),
               Container(
+                height: 60,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey, width: 3),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextFormField(
+
                   cursorColor: Colors.black,
                   controller: _searchController,
                   onChanged: filterAppointments,
                   decoration: InputDecoration(
+                    suffixIcon: Icon(
+                    CupertinoIcons.search,
+                    color: Colors.grey,
+                    size: 30.0,
+                  ),
                     border: InputBorder.none,
+
                     hintText: 'Search Doctor by name',
                     hintStyle: TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       fontWeight: FontWeight.w500,
                       color: Colors.black.withOpacity(0.7),
                     ),

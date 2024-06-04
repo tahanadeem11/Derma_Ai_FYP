@@ -249,6 +249,7 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.all(Radius.circular(60)),
                         ),
                         child: Padding(
+
                           padding: EdgeInsets.only(
                               left: width * 0.074,
                               top: width * 0.075,
@@ -271,8 +272,7 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       "New Scan",
                                       "Identify your trash",
-                                      AssetImage(
-                                          'assets/IconsHomePage/zoom_175391.png'));
+                                      AssetImage('assets/IconsHomePage/zoom_175391.png'));
                                 case 1:
                                   return _buildGridItem(
                                       context,
@@ -375,12 +375,15 @@ class _HomePageState extends State<HomePage> {
                                                 color: Color(0XFF88878E)),
                                           ),
 
-                                          Text(
-                                            "       2",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0XFF454B54)),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 70),
+                                            child: Text(
+                                              "2",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0XFF454B54)),
+                                            ),
                                           )
                                         ],
                                       ),
